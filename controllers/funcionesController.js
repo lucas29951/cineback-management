@@ -21,4 +21,15 @@ const addFuncion = (req, res) => {
     });
 };
 
+const deleteFuncion = (req, res) => {
+    const id = req.params.id;
+    db.query('DELETE FROM funciones WHERE id = ?', [id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al eliminar la funcion' });
+            throw err;
+        }
+        res.json({ mensaje: 'Funcion eliminada' });
+    });
+};
+
 module.exports = { getFunciones, addFuncion };
