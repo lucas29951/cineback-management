@@ -32,4 +32,17 @@ const deletePelicula = (req, res) => {
     });
 };
 
-module.exports = { getPeliculas, addPelicula, deletePelicula };
+const updatePelicula = (req, res) => {
+    const id = req.params.id;
+    const { titulo, descripcion, duracion, director, genero, clasificacion } = req.body;
+
+    connection.query('UPDATE peliculas SET ? WHERE id = ?', [{ titulo, descripcion, duracion, director, genero, clasificacion }, id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al actualizar la película' });
+            throw err;
+        }
+        res.json({ message: 'Película actualizada' });
+    });
+};
+
+module.exports = { getPeliculas, addPelicula, deletePelicula, updatePelicula };
