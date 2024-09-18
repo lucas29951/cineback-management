@@ -32,4 +32,15 @@ const addPelicula = (req, res) => {
     });
 };
 
-module.exports = { getPeliculas, addPelicula };
+const deletePelicula = (req, res) => {
+    const id = req.params.id;
+    connection.query('DELETE FROM peliculas WHERE id = ?', [id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al eliminar la pelicula' });
+            throw err;
+        }
+        res.json({ mensaje: 'Pelicula eliminada' });
+    });
+};
+
+module.exports = { getPeliculas, addPelicula, deletePelicula };
