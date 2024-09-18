@@ -32,4 +32,4 @@ const deleteFuncion = (req, res) => {
     });
 };
 
-module.exports = { getFunciones, addFuncion };
+module.exports = { getFunciones, addFuncion, deleteFuncion };
