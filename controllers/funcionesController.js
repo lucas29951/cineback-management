@@ -32,4 +32,17 @@ const deleteFuncion = (req, res) => {
     });
 };
 
-module.exports = { getFunciones, addFuncion, deleteFuncion };
+const updateFuncion = (req, res) => {
+    const id = req.params.id;
+    const { peliculaId, fecha, hora, sala, precio } = req.body;
+
+    connection.query('UPDATE funciones SET ? WHERE id = ?', [{ peliculaId, fecha, hora, sala, precio }, id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al actualizar la función' });
+            throw err;
+        }
+        res.json({ message: 'Función actualizada' });
+    });
+};
+
+module.exports = { getFunciones, addFuncion, deleteFuncion, updateFuncion };
