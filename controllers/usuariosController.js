@@ -47,4 +47,38 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+const getUsers = (req, res) => {
+    connection.query('SELECT id, nombre, email, rol FROM usuarios', (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al obtener los usuarios' });
+            throw err;
+        }
+        res.json(results);
+    });
+};
+
+const updateUser = (req, res) => {
+    const id = req.params.id;
+    const { nombre, email, rol } = req.body;
+
+    connection.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol }, id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al actualizar el usuario' });
+            throw err;
+        }
+        res.json({ message: 'Usuario actualizado' });
+    });
+};
+
+const deleteUser = (req, res) => {
+    const id = req.params.id;
+    connection.query('DELETE FROM usuarios WHERE id = ?', [id], (err) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al eliminar el usuario' });
+            throw err;
+        }
+        res.json({ message: 'Usuario eliminado' });
+    });
+};
+
+module.exports = { registerUser, loginUser, getUsers, updateUser, deleteUser };
