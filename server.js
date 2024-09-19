@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const peliculasRoutes = require('./routes/peliculas');
 const funcionesRoutes = require('./routes/funciones');
+const usuariosRoutes = require('./routes/usuarios');
 
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cors());
 
 app.use('/api/peliculas', peliculasRoutes);
 app.use('/api/funciones', funcionesRoutes);
+app.use('/api/usuarios', usuariosRoutes);
 
 
 const PORT = process.env.PORT || 5000;
