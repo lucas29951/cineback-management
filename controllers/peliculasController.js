@@ -13,9 +13,9 @@ const getPeliculas = (req, res) => {
 };
 
 const addPelicula = (req, res) => {
-    const { titulo, director, año } = req.body;
-    const query = 'INSERT INTO peliculas (titulo, director, año) VALUES (?, ?, ?)';
-    db.query(query, [titulo, director, año], (err, result) => {
+    const { titulo, descripcion, director, duracion, genero, clasificacion, poster } = req.body;
+    const query = 'INSERT INTO peliculas (titulo, descripcion, director, duracion, genero, clasificacion, poster_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(query, [titulo, descripcion, director, duracion, genero, clasificacion, poster], (err, result) => {
         if (err) throw err;
         res.json({ message: 'Pelicula agregada', result });
     });
