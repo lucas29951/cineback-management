@@ -36,7 +36,7 @@ const updatePelicula = (req, res) => {
     const id = req.params.id;
     const { titulo, descripcion, director, duracion, genero, clasificacion, poster } = req.body;
 
-    connection.query('UPDATE peliculas SET ? WHERE id = ?', [{ titulo, descripcion, director, duracion, genero, clasificacion, poster }, id], (err) => {
+    db.query('UPDATE peliculas SET titulo = ?, descripcion = ?, director = ?, duracion = ?, genero = ?, clasificacion = ?, poster_url = ? WHERE id = ?', [ titulo, descripcion, director, duracion, genero, clasificacion, poster, id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al actualizar la película' });
             throw err;
