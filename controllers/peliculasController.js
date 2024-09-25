@@ -23,7 +23,7 @@ const addPelicula = (req, res) => {
 
 const deletePelicula = (req, res) => {
     const id = req.params.id;
-    connection.query('DELETE FROM peliculas WHERE id = ?', [id], (err) => {
+    db.query('DELETE FROM peliculas WHERE id = ?', [id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al eliminar la pelicula' });
             throw err;
