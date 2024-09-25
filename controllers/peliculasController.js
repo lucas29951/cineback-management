@@ -34,9 +34,9 @@ const deletePelicula = (req, res) => {
 
 const updatePelicula = (req, res) => {
     const id = req.params.id;
-    const { titulo, descripcion, duracion, director, genero, clasificacion } = req.body;
+    const { titulo, descripcion, director, duracion, genero, clasificacion, poster } = req.body;
 
-    connection.query('UPDATE peliculas SET ? WHERE id = ?', [{ titulo, descripcion, duracion, director, genero, clasificacion }, id], (err) => {
+    connection.query('UPDATE peliculas SET ? WHERE id = ?', [{ titulo, descripcion, director, duracion, genero, clasificacion, poster }, id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al actualizar la película' });
             throw err;
