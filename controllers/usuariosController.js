@@ -13,8 +13,8 @@ const registerUser = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // const newUser = { nombre, email, password: hashedPassword, rol };
-        await pool.query('INSERT INTO usuarios (nombre, email, password, rol_id) VALUES (?, ?, ?, ?)', [nombre, email, hashedPassword, rol]);
+        const newUser = { nombre, email, password: hashedPassword, rol_id: rol };
+        await pool.query('INSERT INTO usuarios SET ?', newUser);
 
         res.json({ message: 'Usuario registrado con éxito' });
     } catch (err) {
@@ -60,7 +60,7 @@ const updateUser = (req, res) => {
     const id = req.params.id;
     const { nombre, email, rol } = req.body;
 
-    db.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol }, id], (err) => {
+    con.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol_id: rol }, id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al actualizar el usuario' });
             throw err;
@@ -71,7 +71,7 @@ const updateUser = (req, res) => {
 
 const deleteUser = (req, res) => {
     const id = req.params.id;
-    db.query('DELETE FROM usuarios WHERE id = ?', [id], (err) => {
+    con.query('DELETE FROM usuarios WHERE id = ?', [id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al eliminar el usuario' });
             throw err;
