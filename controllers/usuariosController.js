@@ -1,21 +1,21 @@
 
-const db = require('../config/db');
+const { con, pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
     const { nombre, email, password, rol } = req.body;
 
     try {
-        const [existingUser] = db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+        const [existingUser] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
         if (existingUser.length > 0) {
             return res.status(400).json({ error: 'El email ya está registrado' });
         }
 
-        const hashedPassword = bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = { nombre, email, password: hashedPassword, rol };
-        db.query('INSERT INTO usuarios SET ?', newUser);
+        const newUser = { nombre, email, password: hashedPassword, rol_id: rol };
+        await pool.query('INSERT INTO usuarios SET ?', newUser);
 
         res.json({ message: 'Usuario registrado con éxito' });
     } catch (err) {
@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const [user] = await connection.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+        const [user] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
         if (user.length === 0) {
             return res.status(400).json({ error: 'Usuario no encontrado' });
         }
@@ -41,14 +41,14 @@ const loginUser = async (req, res) => {
             expiresIn: '1h',
         });
 
-        res.json({ token, user: { id: user[0].id, nombre: user[0].nombre, rol: user[0].rol } });
+        res.json({ user: { id: user[0].id, nombre: user[0].nombre, rol: user[0].rol }, token });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
 };
 
 const getUsers = (req, res) => {
-    connection.query('SELECT id, nombre, email, rol FROM usuarios', (err, results) => {
+    con.query('SELECT id, nombre, email, password, rol_id FROM usuarios', (err, results) => {
         if (err) {
             res.status(500).json({ error: 'Error al obtener los usuarios' });
             throw err;
@@ -61,7 +61,7 @@ const updateUser = (req, res) => {
     const id = req.params.id;
     const { nombre, email, rol } = req.body;
 
-    connection.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol }, id], (err) => {
+    con.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol }, id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al actualizar el usuario' });
             throw err;
@@ -72,7 +72,7 @@ const updateUser = (req, res) => {
 
 const deleteUser = (req, res) => {
     const id = req.params.id;
-    connection.query('DELETE FROM usuarios WHERE id = ?', [id], (err) => {
+    con.query('DELETE FROM usuarios WHERE id = ?', [id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al eliminar el usuario' });
             throw err;
