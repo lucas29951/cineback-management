@@ -1,13 +1,13 @@
 
 class Pelicula {
-    constructor(id, titulo, descripcion, duracion, director, genero, calificacion, poster) {
+    constructor(id, titulo, descripcion, duracion, director, genero, clasificacion, poster) {
       this.id = id;
       this.titulo = titulo;
       this.descripcion = descripcion;
       this.director = director;
       this.duracion = duracion;
       this.genero = genero;
-      this.calificacion = calificacion;
+      this.clasificacion = clasificacion;
       this.poster_url = poster;
     }
   }
