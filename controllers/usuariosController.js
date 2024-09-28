@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
             expiresIn: '1h',
         });
 
-        res.json({ user: { id: user[0].id, nombre: user[0].nombre, rol: user[0].rol }, token });
+        res.json({ user: { id: user[0].id, nombre: user[0].nombre, email: user[0].email, rol: user[0].rol }, token });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
