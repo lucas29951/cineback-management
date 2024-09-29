@@ -1,7 +1,7 @@
-
 const { con, pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Usuario = require('../models/Usuario');
 
 const registerUser = async (req, res) => {
     const { nombre, email, password, rol } = req.body;
@@ -12,9 +12,15 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ error: 'El email ya está registrado' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const newUser = new Usuario(null, nombre, email, hashedPassword, rol);
 
-        const newUser = { nombre, email, password: hashedPassword, rol_id: rol };
-        await pool.query('INSERT INTO usuarios SET ?', newUser);
+        await pool.query('INSERT INTO usuarios SET ?', {
+            nombre: newUser.nombre,
+            email: newUser.email,
+            password: newUser.password,
+            rol_id: newUser.rol_id
+        });
 
         res.json({ message: 'Usuario registrado con éxito' });
     } catch (err) {
@@ -36,11 +42,13 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ error: 'Contraseña incorrecta' });
         }
 
-        const token = jwt.sign({ id: user[0].id, rol: user[0].rol }, process.env.JWT_SECRET, {
+        const loggedUser = new Usuario(user[0].id, user[0].nombre, user[0].email, user[0].password, user[0].rol_id);
+
+        const token = jwt.sign({ id: loggedUser.id, rol: loggedUser.rol_id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
 
-        res.json({ user: { id: user[0].id, nombre: user[0].nombre, email: user[0].email, rol: user[0].rol }, token });
+        res.json({ user: loggedUser, token });
     } catch (err) {
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
@@ -52,7 +60,10 @@ const getUsers = (req, res) => {
             res.status(500).json({ error: 'Error al obtener los usuarios' });
             throw err;
         }
-        res.json(results);
+
+        const usuarios = results.map(user => new Usuario(user.id, user.nombre, user.email, user.password, user.rol_id));
+        
+        res.json(usuarios);
     });
 };
 
@@ -60,7 +71,13 @@ const updateUser = (req, res) => {
     const id = req.params.id;
     const { nombre, email, rol } = req.body;
 
-    con.query('UPDATE usuarios SET ? WHERE id = ?', [{ nombre, email, rol_id: rol }, id], (err) => {
+    const updatedUser = new Usuario(id, nombre, email, null, rol);
+
+    con.query('UPDATE usuarios SET ? WHERE id = ?', [{
+        nombre: updatedUser.nombre,
+        email: updatedUser.email,
+        rol_id: updatedUser.rol_id
+    }, id], (err) => {
         if (err) {
             res.status(500).json({ error: 'Error al actualizar el usuario' });
             throw err;
