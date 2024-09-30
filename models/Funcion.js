@@ -1,5 +1,5 @@
 class Funcion {
-    constructor(id, peliculaId, sala, fecha, hora, precio, asientos) {
+    constructor(id, peliculaId, fecha, hora, sala, precio, asientos) {
       this.id = id;
       this.id_pelicula = peliculaId;
       this.fecha = fecha;
