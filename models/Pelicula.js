@@ -1,6 +1,6 @@
 
 class Pelicula {
-    constructor(id, titulo, descripcion, duracion, director, genero, clasificacion, poster) {
+    constructor(id, titulo, descripcion, director, duracion, genero, clasificacion, poster) {
       this.id = id;
       this.titulo = titulo;
       this.descripcion = descripcion;
