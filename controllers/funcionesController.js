@@ -25,6 +25,28 @@ const getFunciones = (req, res) => {
     });
 };
 
+const getFuncionesByPelicula = (req, res) => {
+    const idPelicula = req.params.id;
+    con.query('SELECT * FROM funciones WHERE id_pelicula = ?', [idPelicula], (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al obtener las funciones de la pelicula.' });
+            throw err;
+        }
+
+        const funciones = results.map(funcion => new Funcion(
+            funcion.id,
+            funcion.id_pelicula,
+            funcion.fecha,
+            funcion.hora,
+            funcion.sala,
+            funcion.precio,
+            funcion.asientos_disponibles
+        ));
+
+        res.json(funciones);
+    });
+};
+
 const addFuncion = (req, res) => {
     const { id_pelicula, fecha, hora, sala, precio, asientos_disponibles } = req.body;
 
@@ -82,4 +104,4 @@ const updateFuncion = (req, res) => {
     });
 };
 
-module.exports = { getFunciones, addFuncion, deleteFuncion, updateFuncion };
+module.exports = { getFunciones, getFuncionesByPelicula, addFuncion, deleteFuncion, updateFuncion };
