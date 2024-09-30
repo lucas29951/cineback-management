@@ -26,6 +26,29 @@ const getPeliculas = (req, res) => {
     });
 };
 
+const getPeliculaByID = (req, res) => {
+    const id = req.params.id;
+    con.query('SELECT * FROM peliculas WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error al obtener la película' });
+            throw err;
+        }
+
+        const pelicula = results.map(peli => new Pelicula(
+            peli.id,
+            peli.titulo,
+            peli.descripcion,
+            peli.director,
+            peli.duracion,
+            peli.genero,
+            peli.clasificacion,
+            peli.poster_url
+        ));
+
+        res.json(pelicula);
+    });
+};
+
 const addPelicula = (req, res) => {
     const { titulo, descripcion, director, duracion, genero, clasificacion, poster } = req.body;
 
@@ -84,4 +107,4 @@ const updatePelicula = (req, res) => {
     });
 };
 
-module.exports = { getPeliculas, addPelicula, deletePelicula, updatePelicula };
+module.exports = { getPeliculas, getPeliculaByID, addPelicula, deletePelicula, updatePelicula };
